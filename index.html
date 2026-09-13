@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="OpenTone - 开源吉他音色适配器原型" />
+    <title>OpenTone · 吉他音色适配器</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="OpenTone 首页">
+          <span class="brand-mark">◒</span>
+          <span>OpenTone</span>
+        </a>
+        <nav class="topnav" aria-label="主导航">
+          <a class="active" href="#tones">音色库</a>
+          <a href="#studio">实时分析</a>
+          <a href="#about">关于项目</a>
+        </nav>
+        <button class="icon-button" id="themeButton" title="切换显示模式" aria-label="切换显示模式">☼</button>
+      </header>
+
+      <main id="top">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">OPEN SOURCE · GUITAR TONE WORKBENCH</p>
+            <h1>把喜欢的音色，<em>翻译</em>成你的设备。</h1>
+            <p class="hero-text">从公开 Rig 数据出发，按你的吉他、音箱和效果器给出可操作的设置建议。所有分析都在浏览器本地完成。</p>
+            <div class="hero-actions">
+              <a class="button primary" href="#tones">浏览音色 <span>↓</span></a>
+              <a class="button quiet" href="#studio">打开实时分析 <span>↗</span></a>
+            </div>
+          </div>
+          <div class="hero-console" aria-label="音色预览">
+            <div class="console-top"><span>LIVE PREVIEW</span><span class="live-dot">●  LOCAL</span></div>
+            <div class="waveform" id="heroWave"></div>
+            <div class="console-readout"><span>目标音色</span><strong>British Crunch</strong><span class="readout-value">GAIN 6.8</span></div>
+            <div class="knob-row"><div class="mini-knob"><i style="--angle: 38deg"></i><span>GAIN</span></div><div class="mini-knob"><i style="--angle: -18deg"></i><span>BASS</span></div><div class="mini-knob"><i style="--angle: 12deg"></i><span>MIDS</span></div><div class="mini-knob"><i style="--angle: 30deg"></i><span>TREBLE</span></div></div>
+          </div>
+        </section>
+
+        <section class="workspace" id="tones">
+          <div class="section-heading"><div><p class="eyebrow">01 / TONE LIBRARY</p><h2>找一个音色起点</h2></div><span class="result-count" id="resultCount">6 个公开样本</span></div>
+          <div class="library-grid">
+            <aside class="filters panel">
+              <label class="search-box"><span>⌕</span><input id="searchInput" placeholder="搜索歌曲、艺术家或音色" /></label>
+              <div class="filter-block"><span class="filter-label">风格</span><div class="chips" id="genreFilters"><button class="chip selected" data-genre="全部">全部</button><button class="chip" data-genre="Rock">Rock</button><button class="chip" data-genre="Blues">Blues</button><button class="chip" data-genre="Alternative">Alternative</button></div></div>
+              <div class="filter-block"><span class="filter-label">可信度</span><label class="check-row"><input type="checkbox" id="verifiedOnly" /> 只看已验证 Rig</label></div>
+              <div class="filter-note"><span>⌁</span><p>样本数据来自公开访谈、Rig Rundown 和厂商资料。欢迎提交修订。</p></div>
+            </aside>
+            <div class="tone-list" id="toneList"></div>
+          </div>
+        </section>
+
+        <section class="studio-section" id="studio">
+          <div class="section-heading"><div><p class="eyebrow">02 / ADAPTATION STUDIO</p><h2>把 Rig 映射到你的设备</h2></div><span class="status-pill"><span></span> 本地运行</span></div>
+          <div class="studio-grid">
+            <div class="panel rig-panel"><div class="panel-title"><span>目标 Rig</span><span class="confidence">高可信 · 4 来源</span></div><div id="selectedTone"></div><div class="signal-chain" id="signalChain"></div></div>
+            <div class="panel gear-panel"><div class="panel-title"><span>我的设备</span><button class="text-button" id="resetGear">重置</button></div><label>吉他<select id="guitarSelect"><option>Stratocaster · SSS</option><option>Les Paul · HH</option><option>Telecaster · SS</option></select></label><label>音箱<select id="ampSelect"><option>Fender Blues Junior</option><option>Marshall DSL40</option><option>Vox AC15</option></select></label><label>主效果器<select id="pedalSelect"><option>Tube Screamer TS9</option><option>Boss SD-1</option><option>无过载踏板</option></select></label><button class="button primary full" id="adaptButton">生成我的设置 <span>→</span></button></div>
+          </div>
+          <div class="panel result-panel" id="adaptationResult"><div class="empty-result"><span class="spark">✦</span><div><strong>选择一个音色开始适配</strong><p>我们会根据你的设备，换算出一组可直接拧动的参数。</p></div></div></div>
+        </section>
+
+        <section class="analyzer-section">
+          <div class="section-heading"><div><p class="eyebrow">03 / LIVE ANALYZER</p><h2>边弹，边校准</h2></div><span class="small-note">Web Audio API · 音频不离开设备</span></div>
+          <div class="analyzer panel"><div class="analyzer-main"><div class="meter-label"><span>输入电平</span><span id="levelValue">-∞ dB</span></div><div class="level-meter"><div id="levelFill"></div></div><div class="spectrum" id="spectrum"></div><div class="analyzer-actions"><button class="button primary" id="micButton">◉ 开始监听</button><span id="micStatus">需要浏览器麦克风权限</span></div></div><div class="analyzer-side"><div class="panel-title"><span>即时提示</span><span class="live-dot">●</span></div><div class="tip" id="liveTip"><span>↗</span><div><strong>准备好了吗？</strong><p>点击开始监听，弹奏一个和弦。我们会告诉你输入电平是否合适。</p></div></div><div class="target-bars"><div><span>目标增益</span><b>68%</b></div><div class="bar"><i style="width:68%"></i></div><div><span>当前输入</span><b id="inputPercent">0%</b></div><div class="bar"><i id="inputBar" style="width:0%"></i></div></div></div></div>
+        </section>
+
+        <section class="about-section" id="about"><div><p class="eyebrow">OPEN SOURCE PROJECT</p><h2>一个可以一起校准的音色地图。</h2></div><p>OpenTone 是一个静态、可部署到 GitHub Pages 的实验性项目。数据以 JSON 维护，规则引擎和实时分析都在前端运行，欢迎提交新的 Rig、设备映射和修订建议。</p><a class="button quiet" href="https://github.com" target="_blank" rel="noreferrer">查看 GitHub <span>↗</span></a></section>
+      </main>
+      <footer><span>OpenTone · MIT License</span><span>Built for curious guitarists</span></footer>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
